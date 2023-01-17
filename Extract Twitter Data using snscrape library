@@ -1,0 +1,33 @@
+Here's how to extract data from Twitter using Python.
+
+import snscrape.modules.twitter as sntwitter
+import pandas as pd
+from bs4 import BeautifulSoup
+
+# COMMAND ----------
+
+#################################################
+"""Extract Twitter Data using snscrape library"""
+#################################################
+
+
+# Creating list to append tweet data fields
+attributes_container = []
+search_str = 'electric mobility since:2020-01-01 until:2022-12-31'
+
+def scrapTwitter(search):
+  # Using TwitterSearchScraper to scrape data and append tweets to list
+  for i,tweet in enumerate(sntwitter.TwitterSearchScraper(search).get_items()):
+    if i>150:
+      break
+    attributes_container.append([tweet.user.username, tweet.date, tweet.likeCount, tweet.sourceLabel, tweet.content])
+  # Creating a dataframe to load the list
+  tweeter = pd.DataFrame(attributes_container, columns=["User", "Date Created", "Number of Likes", "Source of Tweet", "Tweet"])
+  return tweeter
+  print("Twitter data has been scrapped successfully!")
+  print(tweeter)
+
+
+# COMMAND ----------
+df = scrapTwitter(search_str)
+print(df)
